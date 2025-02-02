@@ -1,11 +1,14 @@
 import tkinter as tk
 from UI.login import LoginPage
 from UI.dashboard import Dashboard
+from UI.styles import BACKGROUND_COLOR
 
 class AppWindow:
     def __init__(self):
         self.root = tk.Tk()
         self.root.title("Password Manager")
+        self.root.geometry("300x400")
+        self.root.configure(bg=BACKGROUND_COLOR)
         
         # Start with login page
         self.show_login()

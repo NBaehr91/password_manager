@@ -1,6 +1,6 @@
 import json
 import os
-from security.encrypt import hash_master_password
+from src.security.encrypt import hash_master_password
 
 USER_DB = "users.json"
 

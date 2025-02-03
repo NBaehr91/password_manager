@@ -1,6 +1,6 @@
 import json
 import os
-from src.security.encrypt import hash_master_password
+from security.encrypt import hash_master_password
 
 USER_DB = "users.json"
 
@@ -32,3 +32,16 @@ def register_master_password(username, password):
 
     with open(USER_DB, "w") as f:
         json.dump(users, f, indent=4)
+
+def check_user_exists(username):
+    """Checks if a user already exists."""
+    if not os.path.exists(USER_DB):
+        return False
+
+    try:
+        with open(USER_DB, "r") as f:
+            users = json.load(f)
+    except json.JSONDecodeError:
+        return False
+
+    return True if username in users else False

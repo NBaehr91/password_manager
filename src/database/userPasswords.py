@@ -2,12 +2,11 @@ import os
 import json
 from database.passwordStorage import USER_DB
 from UI import appWindow
+from security.encrypt import encode_password
 
 
-
-def open_passwords(sitename):
+def open_passwords(user):
     """Opens the stored passwords for a user."""
-    user = appWindow.current_user
     sanitized_user = "".join(c for c in user if c.isalnum() or c in (' ', '.', '_')).rstrip()
     USER_STORED_PWD = sanitized_user + "_passwords.json"
     if not os.path.exists(USER_STORED_PWD):
@@ -19,12 +18,12 @@ def open_passwords(sitename):
     except json.JSONDecodeError:
         return []
 
-    return user_passwords.get(sitename, [])
+    return user_passwords
 
-def save_password(site, email, password):
+def save_password(user, site, email, password):
     """Saves a new password for a user."""
-    user = appWindow.current_user
     sanitized_user = "".join(c for c in user if c.isalnum() or c in (' ', '.', '_')).rstrip()
+    encoded_password = encode_password(password)
     USER_STORED_PWD = sanitized_user + "_passwords.json"
     if not os.path.exists(USER_STORED_PWD):
         with open(USER_STORED_PWD, "w") as f:
@@ -38,8 +37,7 @@ def save_password(site, email, password):
 
     if site not in user_passwords:
         user_passwords[site] = []
-
-    user_passwords[site].append({"email": email, "password": password})
+        user_passwords[site].append({"email": email, "password": encoded_password})
 
     with open(USER_STORED_PWD, "w") as f:
         json.dump(user_passwords, f, indent=4)

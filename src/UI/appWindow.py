@@ -16,17 +16,19 @@ class AppWindow:
         """Display login screen."""
         self.clear_window()
         self.login_page = LoginPage(self.root, self.on_successful_login)
+        self.root.geometry("300x400")
         self.login_page.pack(fill='both', expand=True)
 
-    def on_successful_login(self, username):
+    def on_successful_login(self, username, key):
         """Callback function to switch to the dashboard after successful login."""
-        self.current_user = username
+        self.user = username
+        self.current_user_key = key
         self.show_dashboard()
 
     def show_dashboard(self):
         """Display the main dashboard after login."""
         self.clear_window()
-        self.dashboard = Dashboard(self.root, self.current_user)
+        self.dashboard = Dashboard(self.root, self.user, self.current_user_key)
         self.dashboard.pack(fill='both', expand=True)
 
     def clear_window(self):

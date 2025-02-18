@@ -12,5 +12,11 @@ def get_fonts(root):
         "subtitle": font.Font(root, family=FONT, size=14),
         "text": font.Font(root, family=FONT, size=12),
         "button": font.Font(root, family=FONT, size=12),
+        "list": font.Font(root, family=FONT, size=14,),
     }
     
+def on_hover(e, button):
+    button.config(bg=PRIMEARY_COLOR)
+
+def on_leave(e, button):    
+    button.config(bg=SECONDARY_COLOR)

@@ -1,21 +1,14 @@
 import tkinter as tk
 from tkinter import messagebox
 from database.passwordStorage import check_master_password, check_user_exists, register_master_password
-from UI.styles import BACKGROUND_COLOR, TEXT_COLOR, PRIMEARY_COLOR, SECONDARY_COLOR, get_fonts
-
-def on_hover(e, button):
-    button.config(bg=PRIMEARY_COLOR)
-
-def on_leave(e, button):
-    button.config(bg=SECONDARY_COLOR)
-
+from UI.styles import BACKGROUND_COLOR, TEXT_COLOR, PRIMEARY_COLOR, SECONDARY_COLOR, get_fonts, on_hover, on_leave
+from security.encrypt import get_master_key
 
 class LoginPage(tk.Frame):
     """Handles user login and registration."""
     def __init__(self, root, on_success):
         super().__init__(root)
         self.root = root
-        self.root.geometry("300x400")
         self.on_success = on_success
         #self.root.title("Login")
         fonts = get_fonts(root)
@@ -44,8 +37,8 @@ class LoginPage(tk.Frame):
         """Checks the login credentials and switches to the dashboard if correct."""
         username = self.username_entry.get()
         password = self.password_entry.get()
-
-        if check_master_password(username, password):
+        masterkey = get_master_key(password)
+        if check_master_password(username, masterkey):
             messagebox.showinfo("Success", "Login successful!")
             self.on_success(username)  # Switch to the dashboard
         else:
@@ -53,7 +46,7 @@ class LoginPage(tk.Frame):
 
     def register(self):
         """Checks if user exists and registers if not."""
-
+       
         username = self.username_entry.get()
         password = self.password_entry.get()
 

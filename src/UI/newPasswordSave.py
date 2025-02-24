@@ -1,13 +1,15 @@
 import tkinter as tk
 from tkinter import messagebox
 from security.generatePassword import password_generator
+from security.encrypt import encode_password
 from database.userPasswords import open_passwords, save_password
 from UI.styles import BACKGROUND_COLOR, TEXT_COLOR, PRIMEARY_COLOR, SECONDARY_COLOR, get_fonts, on_hover, on_leave
 
 class NewPasswordPage(tk.Toplevel):
-    def __init__(self, root, username):
+    def __init__(self, root, username, key):
         super().__init__(root)
         self.username = username
+        self.key = key
         self.configure(bg=BACKGROUND_COLOR)
         self.geometry("300x500")
         fonts = get_fonts(root)
@@ -37,7 +39,8 @@ class NewPasswordPage(tk.Toplevel):
         password = self.password_entry.get()
 
         if site and email and password:
-            save_password(self.username, site, email, password)
+            encrpt_password = encode_password(password, self.key, 10)
+            save_password(self.username, site, email, encrpt_password)
             messagebox.showinfo("Success", "Password saved successfully!")
             self.site_entry.delete(0, tk.END)
             self.email_entry.delete(0, tk.END)

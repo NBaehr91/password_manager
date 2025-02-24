@@ -23,7 +23,6 @@ def open_passwords(user):
 def save_password(user, site, email, password):
     """Saves a new password for a user."""
     sanitized_user = "".join(c for c in user if c.isalnum() or c in (' ', '.', '_')).rstrip()
-    encoded_password = encode_password(password)
     USER_STORED_PWD = sanitized_user + "_passwords.json"
     if not os.path.exists(USER_STORED_PWD):
         with open(USER_STORED_PWD, "w") as f:

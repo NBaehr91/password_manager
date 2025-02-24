@@ -27,3 +27,55 @@ def encode_rounds(val, subkey):
     val = ((val << 2) | (val >> 4)) & 0xFF
     val = (val ^ (subkey>>2))
     return val
+
+def encode_password(password, masterkey, numpasses):
+    """Encodes a password using the master key and number of passes."""
+
+    char_blocks = [ord(c) for c in password]
+    encrypted_blocks = []
+    passkeys = generate_encryption_key(masterkey, numpasses)
+
+    # Split each character into two 4-bit blocks
+    for block in char_blocks:
+        left = block >> 4
+        right = block & 0xF
+
+        # Perform the encoding rounds
+        for i in range(numpasses):
+            new_left = right
+            new_right = left ^ encode_rounds(right, passkeys[i])
+            left = new_left
+            right = new_right
+        
+        # Combine the blocks back into a single byte
+        encrypted_block = (left << 4) | right
+        # Append the encrypted block to the list
+        encrypted_blocks.append(encrypted_block)
+    
+    # Convert the encrypted blocks back to a string
+    encrypted_password = ''.join(chr(block) for block in encrypted_blocks)
+    return encrypted_password
+
+def decode_password_blocks(encrypted_block_pairs, masterkey, numpasses):
+    """Decodes the encrypted password blocks using the master key and number of passes."""
+    left, right = encrypted_block_pairs
+    passkeys = generate_encryption_key(masterkey, numpasses)[::-1]  # Reverse the passkeys for decryption
+    # Perform the decoding rounds
+    for i in range(numpasses):
+        new_right = left
+        new_left = right ^ encode_rounds(left, passkeys[i])
+        left = new_left
+        right = new_right
+
+    return chr(left) + chr(right)
+
+def decode_password(encrypted_password_blocks, masterkey, numpasses):
+    """Decodes an encrypted password using the master key and number of passes."""
+    decrypted_password = ""
+
+
+    for encrytped_pairs in encrypted_password_blocks:
+        decrypted_password += decode_password_blocks(encrytped_pairs, masterkey, numpasses)
+
+    return decrypted_password
+    

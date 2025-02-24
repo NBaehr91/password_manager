@@ -38,9 +38,9 @@ class LoginPage(tk.Frame):
         username = self.username_entry.get()
         password = self.password_entry.get()
         masterkey = get_master_key(password)
-        if check_master_password(username, masterkey):
+        if check_master_password(username, password):
             messagebox.showinfo("Success", "Login successful!")
-            self.on_success(username)  # Switch to the dashboard
+            self.on_success(username, masterkey)  # Switch to the dashboard
         else:
             messagebox.showerror("Error", "Invalid username or password.")
 

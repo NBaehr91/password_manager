@@ -36,7 +36,7 @@ def save_password(user, site, email, password):
 
     if site not in user_passwords:
         user_passwords[site] = []
-        user_passwords[site].append({"email": email, "password": encoded_password})
+        user_passwords[site].append({"email": email, "password": password})
 
     with open(USER_STORED_PWD, "w") as f:
         json.dump(user_passwords, f, indent=4)

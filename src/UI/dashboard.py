@@ -33,8 +33,6 @@ class Dashboard(tk.Frame):
         for site in self.password_list:
             self.password_listbox.insert(tk.END, site)
 
-        
-
     # Popup window for new passwords
     def save_new_passwords(self):
         new_password_window = NewPasswordPage(self.root, self.username, self.key)

@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import messagebox
 from security.generatePassword import password_generator
 from security.encrypt import encode_password
-from database.userPasswords import open_passwords, save_password
+from database.userPasswords import open_passwords, save_password, toggle_password
 from UI.styles import BACKGROUND_COLOR, TEXT_COLOR, PRIMEARY_COLOR, SECONDARY_COLOR, get_fonts, on_hover, on_leave
 
 class NewPasswordPage(tk.Toplevel):
@@ -10,6 +10,7 @@ class NewPasswordPage(tk.Toplevel):
         super().__init__(root)
         self.username = username
         self.key = key
+        self.password_visible = False
         self.configure(bg=BACKGROUND_COLOR)
         self.geometry("300x500")
         fonts = get_fonts(root)
@@ -24,8 +25,13 @@ class NewPasswordPage(tk.Toplevel):
         self.email_entry.pack(fill='x',pady=(0,10))
 
         tk.Label(self, text="Password: ", font=fonts["text"], bg=BACKGROUND_COLOR, anchor="w").pack(fill='x')
-        self.password_entry = tk.Entry(self, font=fonts["text"])
-        self.password_entry.pack(fill='x', pady=(0,10))
+        self.password_frame = tk.Frame(self, bg=BACKGROUND_COLOR)
+        self.password_frame.pack(fill='x', pady=(0,10))
+        self.password_entry = tk.Entry(self.password_frame, font=fonts["text"], show="*")
+        self.password_entry.pack(side="left", fill='x', expand=True)
+        #toggle password visibility
+        self.show_button = tk.Button(self.password_frame, text="Show", font=fonts["text"], bg=SECONDARY_COLOR, command=self.toggle_password_visablity)
+        self.show_button.pack(side="right")
 
         self.save_button = tk.Button(self, text="Save", font=fonts["button"], bg=SECONDARY_COLOR, command=self.save)
         self.save_button.pack(pady=(15,0))
@@ -48,3 +54,6 @@ class NewPasswordPage(tk.Toplevel):
             self.destroy()
         else:
             messagebox.showerror("Error", "Please fill in all fields.")
+
+    def toggle_password_visablity(self):
+        self.password_visible = toggle_password(self.password_entry, self.show_button, self.password_visible)

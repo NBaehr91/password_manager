@@ -46,3 +46,18 @@ def save_password(user, site, email, password):
     with open(USER_STORED_PWD, "w") as f:
         json.dump(user_passwords, f, indent=4)
 
+def toggle_password(password_entry, show_button, password_visible):
+    """
+    Toggles the visibility of the password in the password entry field.
+    
+    If the password is currently visible, it hides it by setting the show attribute to "*".
+    If the password is currently hidden, it shows it by setting the show attribute to an empty string.
+    """
+    if password_visible:
+        password_entry.config(show="*")
+        show_button.config(text="Show")
+    else:
+        password_entry.config(show="")
+        show_button.config(text="Hide")
+    return not password_visible
+

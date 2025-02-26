@@ -42,9 +42,8 @@ def encode_password(password, masterkey, numpasses):
 
         # Perform the encoding rounds
         for i in range(numpasses):
-            encrypted_key = xor_encrypt_decrypt(str(passkeys[i]), masterkey)
             new_left = right
-            new_right = left ^ encode_rounds(right, encrypted_key)
+            new_right = left ^ encode_rounds(right, passkeys[i])
             left = new_left
             right = new_right
         
@@ -63,9 +62,8 @@ def decode_password_blocks(encrypted_block_pairs, masterkey, numpasses):
     passkeys = generate_encryption_key(masterkey, numpasses)[::-1]  # Reverse the passkeys for decryption
     # Perform the decoding rounds
     for i in range(numpasses):
-        encrypted_key = xor_encrypt_decrypt(str(passkeys[i]), masterkey)
         new_right = left
-        new_left = right ^ encode_rounds(left, encrypted_key)
+        new_left = right ^ encode_rounds(left, passkeys[i])
         left = new_left
         right = new_right
 

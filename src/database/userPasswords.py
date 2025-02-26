@@ -35,8 +35,13 @@ def save_password(user, site, email, password):
         user_passwords = {}
 
     if site not in user_passwords:
+        # If the site is not in the dictionary, add it
         user_passwords[site] = []
         user_passwords[site].append({"email": email, "password": password})
+    else:
+        # If the site is already in the dictionary, update the email and password
+        user_passwords[site]["email"] = email
+        user_passwords[site]["password"] = password
 
     with open(USER_STORED_PWD, "w") as f:
         json.dump(user_passwords, f, indent=4)

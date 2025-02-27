@@ -6,10 +6,18 @@ A secure and user-friendly password manager application to generate, store, and 
 
 - **Password Generation**: Generate strong and secure passwords.
 - **Password Storage**: Store passwords securely using encryption.
+                        All passwords are saved locally.
 - **User Management**: Manage multiple users with individual password storage.
 - **Password Visibility Toggle**: Show or hide passwords with a single click.
-- **Scrollable List**: Display saved sites in a scrollable list with site names and dates saved.
+- **Scrollable List**: Display saved sites in a scrollable list with site names and 
+                       dates saved.
 - **Add New Passwords**: Easily add new passwords through a user-friendly interface.
+- **Encryption**: Encryption logic uses a Feistel-based encryption in combination with 
+                  XOR encryption.
+  - `Feistel encryption`: Takes a password in plaintext and encodes each character using 
+                          a masterkey that is unique to each user.
+  - `XOR`: Once the Feistel rounds are complete, the encoded password is ran through
+           a XOR encryption for an addional layer of security.
 
 ## Installation
 
@@ -41,12 +49,15 @@ A secure and user-friendly password manager application to generate, store, and 
      - `dashboard.py`: The main dashboard interface.
      - `newPasswordSave.py`: Interface for adding new passwords.
      - `showPassword.py`: Interface for displaying passwords.
+     - `login.py`: Interface for login screen, application launches at this window
+     - `styles.py`: Styling constants and functions for the UI.
   - **database/**
-     - `userPasswords.py`: Functions for opening and saving passwords.
+     - `userPasswords.py`: Functions for opening and saving passwords for currently logged user.
+     - `passwordStorage.py`: Functions for checking login details.
   - **security/**
      - `generatePassword.py`: Password generation logic.
      - `encrypt.py`: Functions for encoding and decoding passwords.
-  - `styles.py`: Styling constants and functions for the UI.
+  
 
 - **Security**
   - Passwords are stored in JSON files with encryption.

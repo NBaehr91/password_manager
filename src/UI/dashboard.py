@@ -28,7 +28,8 @@ class Dashboard(tk.Frame):
         self.new_pw_button.pack()
 
         # display sites saved in scrollable list
-        self.password_list = open_passwords(username)
+        self.password_dict = open_passwords(username)
+        self.password_list = list(self.password_dict.keys())
         self.password_list_frame = tk.Frame(self, bg=BACKGROUND_COLOR)
         self.password_list_frame.pack(pady=(10,0), fill='x')
         self.password_list_frame.grid_rowconfigure(0, weight=1)
@@ -41,7 +42,7 @@ class Dashboard(tk.Frame):
         self.password_listbox.pack(pady=(10,0), fill='x')
         
         for site in self.password_list:
-            self.password_listbox.insert("", tk.END, values=(site, self.password_list[site]["date"]))
+            self.password_listbox.insert("", tk.END, values=(site, self.password_dict[site][0]["date"]))
         # Bind the listbox selection to the show_password method
         self.password_listbox.bind("<<TreeviewSelect>>", self.show_password)
 
@@ -53,19 +54,20 @@ class Dashboard(tk.Frame):
         # Update the listbox with the new password
         self.password_listbox.delete(0, tk.END)
         self.password_list = open_passwords(self.username)
-        for site in self.password_list:
+        self.password_sites = list(self.password_list.keys())
+        for site in self.password_sites:
             self.password_listbox.insert(tk.END, site)
         
 
-    def show_password(self):
+    def show_password(self, event):
         """
         Display the password for the selected site in a new window.
         
         This method is triggered when a site is selected from the listbox.
         It opens a new window displaying the password for the selected site.
         """
-        selected_index = self.password_listbox.curselection()[0]
-        selected_site = self.password_listbox.get(selected_index)
+        selected_item = self.password_listbox.selection()[0]
+        selected_site = self.password_listbox.item(selected_item, "values")[0]
         if selected_site:
             new_password_window = PasswordPage(self.root, self.username, selected_site, self.key)
             new_password_window.grab_set()

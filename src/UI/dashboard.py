@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import messagebox
+from tkinter import messagebox, ttk
 from security.generatePassword import password_generator
 from database.userPasswords import open_passwords, save_password
 from UI.newPasswordSave import NewPasswordPage
@@ -32,14 +32,18 @@ class Dashboard(tk.Frame):
         self.password_list_frame = tk.Frame(self, bg=BACKGROUND_COLOR)
         self.password_list_frame.pack(pady=(10,0), fill='x')
         self.password_list_frame.grid_rowconfigure(0, weight=1)
-        self.password_listbox = tk.Listbox(self.password_list_frame, width=50, height=15, font=fonts["list"], bg=BACKGROUND_COLOR, selectbackground=PRIMEARY_COLOR, selectforeground=TEXT_COLOR,)
-        self.password_listbox.pack(pady=(10,0))
-        self.name_sort_header = tk.Label(self.password_listbox, text="Site or App Name", font=fonts["text"], bg=BACKGROUND_COLOR)
-        self.name_sort_header.grid(row=0, column=0, padx=(10,0), pady=(10,0), sticky="w")
-        self.name_sort_header.pack(side="left", fill='x', expand=True)
+
+        self.password_listbox = ttk.Treeview(self.password_list_frame, columns=("site", "date"), show="headings", height=10)
+        self.password_listbox.heading("site", text="Site or App")
+        self.password_listbox.heading("date", text="Date Saved")
+        self.password_listbox.column("site", width=300)
+        self.password_listbox.column("date", width=100)
+        self.password_listbox.pack(pady=(10,0), fill='x')
+        
         for site in self.password_list:
-            self.password_listbox.insert(tk.END, site)
-        self.password_listbox.bind("<<ListboxSelect>>", self.show_password)
+            self.password_listbox.insert("", tk.END, values=(site, self.password_list[site]["date"]))
+        # Bind the listbox selection to the show_password method
+        self.password_listbox.bind("<<TreeviewSelect>>", self.show_password)
 
     # Popup window for new passwords
     def save_new_passwords(self):

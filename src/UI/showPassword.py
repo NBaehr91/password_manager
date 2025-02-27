@@ -2,10 +2,10 @@ import tkinter as tk
 from tkinter import messagebox
 from security.generatePassword import password_generator
 from security.encrypt import encode_password, decode_password
-from database.userPasswords import open_passwords, save_password, toggle_password
-from UI.styles import BACKGROUND_COLOR, TEXT_COLOR, PRIMEARY_COLOR, SECONDARY_COLOR, get_fonts, on_hover, on_leave
+from database.userPasswords import open_passwords, save_password
+from UI.styles import BACKGROUND_COLOR, TEXT_COLOR, PRIMEARY_COLOR, SECONDARY_COLOR, get_fonts, on_hover, on_leave, toggle_password
 
-class NewPasswordPage(tk.Toplevel):
+class PasswordPage(tk.Toplevel):
     def __init__(self, root, username, site, key):
         super().__init__(root)
         passwords = open_passwords(username)

@@ -74,11 +74,12 @@ def decode_password_blocks(encrypted_block_pairs, masterkey, numpasses):
 def decode_password(encrypted_password_blocks, masterkey, numpasses):
     """Decodes an encrypted password using the master key and number of passes."""
     xor_key = masterkey & 0xFF
-    encrypted_password = xor_encrypt_decrypt(encrypted_password, xor_key)
+    encrypted_password = xor_encrypt_decrypt(encrypted_password_blocks, xor_key)
     decrypted_password = ""
 
-    for encrytped_pairs in encrypted_password_blocks:
-        decrypted_password += decode_password_blocks(encrytped_pairs, masterkey, numpasses)
+    for i in range(0, len(encrypted_password), 2):
+        encrypted_pairs = (ord(encrypted_password[i]), ord(encrypted_password[i+1]))
+        decrypted_password += decode_password_blocks(encrypted_pairs, masterkey, numpasses)
 
     return decrypted_password
     

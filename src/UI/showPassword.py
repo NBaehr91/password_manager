@@ -9,7 +9,8 @@ class PasswordPage(tk.Toplevel):
     def __init__(self, root, username, site, key):
         super().__init__(root)
         passwords = open_passwords(username)
-        show_password = decode_password(passwords[site]["password"], key, 10)
+        encrypted_site_password = passwords[site][0]["password"]
+        show_password = decode_password(encrypted_site_password, key, 10)
         self.username = username
         self.key = key
         self.password_visible = False

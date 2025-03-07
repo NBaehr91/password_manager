@@ -51,13 +51,21 @@ class Dashboard(tk.Frame):
         new_password_window = NewPasswordPage(self.root, self.username, self.key)
         new_password_window.grab_set()
         new_password_window.focus_set()
-        # Update the listbox with the new password
-        self.password_listbox.delete(0, tk.END)
+        self.wait_window(new_password_window)  # Wait for the new password window to close
+        # After the new password window is closed, update the listbox
+        self.update_listbox()
+
+    def update_listbox(self):
+        """
+        Update the listbox with the new password.
+        
+        This method is called when a new password is saved. It updates the listbox with the new password.
+        """
+        self.password_listbox.delete(*self.password_listbox.get_children())
         self.password_list = open_passwords(self.username)
         self.password_sites = list(self.password_list.keys())
         for site in self.password_sites:
             self.password_listbox.insert(tk.END, site)
-        
 
     def show_password(self, event):
         """

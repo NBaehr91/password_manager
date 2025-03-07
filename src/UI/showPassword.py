@@ -27,7 +27,7 @@ class PasswordPage(tk.Toplevel):
 
         tk.Label(self, text="Email or Username: ", font=fonts["text"], bg=BACKGROUND_COLOR, anchor="w").pack(fill='x')
         self.email_entry = tk.Entry(self, font=fonts["text"])
-        self.email_entry.insert(0, passwords[site]["email"])
+        self.email_entry.insert(0, passwords[site][0]["email"])
         self.email_entry.config(state="readonly")
         self.email_entry.pack(fill='x',pady=(0,10))
 

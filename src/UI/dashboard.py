@@ -61,11 +61,11 @@ class Dashboard(tk.Frame):
         
         This method is called when a new password is saved. It updates the listbox with the new password.
         """
+        self.password_dict = open_passwords(self.username)
+        self.password_list = list(self.password_dict.keys())
         self.password_listbox.delete(*self.password_listbox.get_children())
-        self.password_list = open_passwords(self.username)
-        self.password_sites = list(self.password_list.keys())
-        for site in self.password_sites:
-            self.password_listbox.insert(tk.END, site)
+        for site in self.password_list:
+            self.password_listbox.insert("", tk.END, values=(site, self.password_dict[site][0]["date"]))
 
     def show_password(self, event):
         """

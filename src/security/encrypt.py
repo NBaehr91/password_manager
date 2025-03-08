@@ -54,13 +54,17 @@ def encode_password(password, masterkey, numpasses):
     
     # Convert the encrypted blocks back to a string
     encrypted_password = ''.join(chr(block) for block in encrypted_blocks)
+
     xor_key = masterkey & 0xFF
     encrypted_password = xor_encrypt_decrypt(encrypted_password, xor_key)
+
     return encrypted_password
 
 def decode_password_blocks(encrypted_block_pairs, masterkey, numpasses):
     """Decodes the encrypted password blocks using the master key and number of passes."""
-    left, right = encrypted_block_pairs
+    print("encrypted block pairs: ", encrypted_block_pairs, "\n")
+    left = encrypted_block_pairs >> 4
+    right = encrypted_block_pairs & 0xF
     passkeys = generate_encryption_key(masterkey, numpasses)[::-1]  # Reverse the passkeys for decryption
     # Perform the decoding rounds
     for i in range(numpasses):
@@ -69,16 +73,16 @@ def decode_password_blocks(encrypted_block_pairs, masterkey, numpasses):
         left = new_left
         right = new_right
 
-    return chr(left) + chr(right)
+    return chr((left << 4) | right)
 
 def decode_password(encrypted_password_blocks, masterkey, numpasses):
     """Decodes an encrypted password using the master key and number of passes."""
     xor_key = masterkey & 0xFF
+
     encrypted_password = xor_encrypt_decrypt(encrypted_password_blocks, xor_key)
     decrypted_password = ""
 
-    for i in range(0, len(encrypted_password), 2):
-        encrypted_pairs = (ord(encrypted_password[i]), ord(encrypted_password[i+1]))
+    for encrypted_pairs in encrypted_password:
         decrypted_password += decode_password_blocks(encrypted_pairs, masterkey, numpasses)
 
     return decrypted_password

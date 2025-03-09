@@ -40,8 +40,6 @@ def encode_password(password, masterkey, numpasses):
         left = block >> 4
         right = block & 0xF
 
-        print("left: ", left, "right: ", right, "char: ", block)
-
         # Perform the encoding rounds
         for i in range(numpasses):
             new_left = right
@@ -50,12 +48,9 @@ def encode_password(password, masterkey, numpasses):
             right = new_right
             left = left & 0xF
             right = right & 0xF
-            print("round: ", i, "left: ", left, "right: ", right, "passkey: ", passkeys[i])
-        
+
         # Combine the blocks back into a single byte
         encrypted_block = (left << 4) | right
-
-        print("\nunencrypted char: ", block, "\nencrypted block: ", encrypted_block, "\n")
 
         # Append the encrypted block to the list
         encrypted_blocks.append(encrypted_block)
@@ -63,12 +58,8 @@ def encode_password(password, masterkey, numpasses):
     # Convert the encrypted blocks back to a string
     encrypted_password = ''.join(chr(block) for block in encrypted_blocks)
 
-    print("encrypted password: ", encrypted_password, "\n")
-
     xor_key = masterkey & 0xFF
     encrypted_password = xor_encrypt_decrypt(encrypted_password, xor_key)
-
-    print("encrypted password after xor: ", encrypted_password, "\n")
 
     return encrypted_password
 
@@ -80,8 +71,6 @@ def decode_password_blocks(encrypted_block_pairs, masterkey, numpasses):
     passkeys = generate_encryption_key(masterkey, numpasses)[::-1]  # Reverse the passkeys for decryption
     # Perform the decoding rounds
 
-    print("left: ", left, "right: ", right, "char: ", encrypted_block_pairs)
-
     for i in range(numpasses):
         new_right = left
         new_left = right ^ encode_rounds(left, passkeys[i])
@@ -90,9 +79,6 @@ def decode_password_blocks(encrypted_block_pairs, masterkey, numpasses):
         left = left & 0xF
         right = right & 0xF
 
-        print("round: ", i, "left: ", left, "right: ", right, "passkey: ", passkeys[i])
-
-    print("decrypted block: ", (left << 4) | right, "\n")
     decrypted_block = (left << 4) | right
     return chr(decrypted_block)
 
@@ -100,15 +86,10 @@ def decode_password(encrypted_password_blocks, masterkey, numpasses):
     """Decodes an encrypted password using the master key and number of passes."""
     xor_key = masterkey & 0xFF
 
-    print("decoding password: ", encrypted_password_blocks, "\n")
-
     encrypted_password = xor_encrypt_decrypt(encrypted_password_blocks, xor_key)
     decrypted_password = ""
 
-    print("encrypted password after xor: ", encrypted_password, "\n")
-
     for char in encrypted_password:
-        print("char: ", char)
         decrypted_password += decode_password_blocks(ord(char), masterkey, numpasses)
 
     return decrypted_password

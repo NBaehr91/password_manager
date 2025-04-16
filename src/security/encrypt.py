@@ -1,4 +1,8 @@
 import hashlib
+import os
+import base64
+import time
+import struct
 
 def hash_master_password(password: str) -> str:
     
@@ -97,3 +101,32 @@ def decode_password(encrypted_password_blocks, masterkey, numpasses):
 def xor_encrypt_decrypt(data, key):
     """Encrypts or decrypts data using XOR with the given key."""
     return ''.join(chr(ord(c) ^ key) for c in data)
+
+def generate_2FA_secret():
+    """Generates a 2FA secret code for the user."""
+    return base64.b32encode(os.urandom(10)).decode('utf-8')  # Example using base64 encoding
+
+def generate_login_2FA_code(secret, seconds=60):
+    """Generates a TOTP code based on the secret and current time."""
+    key = base64.b32decode(secret, casefold=True)
+    # Calculate the current time in seconds
+    timestamp = int(time.time() // seconds)
+    # Pack the timestamp into a binary format
+    counter = struct.pack(">Q", timestamp)
+    # Generate a SHA-1 hash of the key and counter
+    timesensitive_hash = hashlib.sha1(key + counter).digest()
+    # Extract the offset from the last byte of the hash
+    offset = timesensitive_hash[-1] & 0x0F
+    # Extract a 4-byte code from the hash and convert it to an integer
+    code = (struct.unpack(">I", timesensitive_hash[offset:offset + 4])[0] & 0x7FFFFFFF) % 1000000
+    # Ensure the code is a 6-digit number
+    return str(code % 1000000).zfill(6)
+
+def verify_totp_code(secret, code, seconds=60, window=1):
+    """Verifies a TOTP code against the secret."""
+    # Check the current time and the window for valid codes
+    for i in range(-window, window + 1):
+        expected_code = generate_login_2FA_code(secret, seconds)
+        if expected_code == code:
+            return True
+    return False

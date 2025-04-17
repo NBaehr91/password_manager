@@ -1,9 +1,9 @@
 import tkinter as tk
-from UI.registerUser import RegisterNewUserPage
 from tkinter import messagebox
 from database.passwordStorage import check_master_password, check_user_exists, register_master_password, update_user_wth_2FA, update_user_wthout_2FA
 from UI.styles import BACKGROUND_COLOR, TEXT_COLOR, PRIMEARY_COLOR, SECONDARY_COLOR, get_fonts, on_hover, on_leave
 from security.encrypt import get_master_key, generate_2FA_secret, verify_totp_code
+from UI.registerUser import RegisterNewUserPage
 
 
 class LoginPage(tk.Frame):
@@ -101,10 +101,14 @@ class LoginPage(tk.Frame):
 
         response = None
         popup = tk.Toplevel(self)
+        popup.grab_set()  # Make the popup modal
+        popup.configure(bg=BACKGROUND_COLOR)
+        popup.geometry("300x200")
         popup.title("Enable 2FA")
         tk.Label(popup, text="Do you want to enable 2FA additional security?", font=get_fonts(self.root)["text"]).pack(pady=10)
         tk.Button(popup, text="Yes", command=on_yes).pack(side=tk.LEFT, padx=20, pady=10)
         tk.Button(popup, text="No", command=on_no).pack(side=tk.RIGHT, padx=20, pady=10)
+        self.wait_window(popup)  # Wait for the popup to close
         return response
     
     def ask_totp_code(self):

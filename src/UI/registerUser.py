@@ -4,7 +4,7 @@ from security.encrypt import generate_2FA_secret
 from database.passwordStorage import register_master_password, check_user_exists
 from UI.styles import BACKGROUND_COLOR, TEXT_COLOR, PRIMEARY_COLOR, SECONDARY_COLOR, get_fonts, on_hover, on_leave, toggle_password
 
-class RegisterNewUserPage(tk.TopLevel):
+class RegisterNewUserPage(tk.Toplevel):
     def __init__(self, root):
         super().__init__(root)
         self.configure(bg=BACKGROUND_COLOR)

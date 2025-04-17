@@ -97,13 +97,15 @@ def update_user_wth_2FA(username, secret_2FA_code):
     user_data = users[username]
     if isinstance(user_data, str):
         # If the user only has a password, convert it to a dict with 2FA secret
-        user_data = {"password": user_data}
-
-    users[username] = {
-        "password": user_data,
-        "totp_secret": secret_2FA_code,
-        "2FA_enabled": True
-    }
+        user_data = {"password": user_data,
+                     "totp_secret": secret_2FA_code,
+                     "2FA_enabled": True}
+    else:
+        users[username] = {
+            "password": user_data["password"],
+            "totp_secret": secret_2FA_code,
+            "2FA_enabled": True
+        }
 
     with open(USER_DB, "w") as f:
         json.dump(users, f, indent=4)
@@ -122,12 +124,13 @@ def update_user_wthout_2FA(username):
     user_data = users[username]
     if isinstance(user_data, str):
         # If the user only has a password, convert it to a dict without 2FA
-        user_data = {"password": user_data}
-
-    users[username] = {
-        "password": user_data,
-        "2FA_enabled": False
-    }
+        user_data = {"password": user_data,
+                     "2FA_enabled": False}
+    else:
+        users[username] = {
+            "password": user_data["password"],
+            "2FA_enabled": False
+        }
 
     with open(USER_DB, "w") as f:
         json.dump(users, f, indent=4)

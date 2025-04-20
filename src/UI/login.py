@@ -105,9 +105,20 @@ class LoginPage(tk.Frame):
         popup.configure(bg=BACKGROUND_COLOR)
         popup.geometry("300x200")
         popup.title("Enable 2FA")
-        tk.Label(popup, text="Do you want to enable 2FA additional security?", font=get_fonts(self.root)["text"]).pack(pady=10)
+        text = tk.Label(
+            popup, 
+            text="Do you want to enable 2FA additional security?", 
+            font=get_fonts(self.root)["text"],
+            wraplength=250,
+            )
+        text.pack(pady=10, fill='x', expand=True)
         tk.Button(popup, text="Yes", command=on_yes).pack(side=tk.LEFT, padx=20, pady=10)
         tk.Button(popup, text="No", command=on_no).pack(side=tk.RIGHT, padx=20, pady=10)
+
+        def update_text_wraplength(event):
+            text.config(wraplength=event.width * 0.9)
+
+        popup.bind("<Configure>", update_text_wraplength)  # Update wraplength on resize
         self.wait_window(popup)  # Wait for the popup to close
         return response
     

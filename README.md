@@ -6,34 +6,35 @@ A secure and user-friendly password manager application to generate, store, and 
 
 - **Password Generation**: Generate strong and secure passwords.
 - **Password Storage**: Store passwords securely using encryption.
-                        All passwords are saved locally.
+            All passwords are saved locally.
 - **User Management**: Manage multiple users with individual password storage.
 - **Password Visibility Toggle**: Show or hide passwords with a single click.
 - **Scrollable List**: Display saved sites in a scrollable list with site names and 
-                       dates saved.
+             dates saved.
 - **Add New Passwords**: Easily add new passwords through a user-friendly interface.
 - **Encryption**: Encryption logic uses a Feistel-based encryption in combination with 
-                  XOR encryption.
+          XOR encryption.
   - `Feistel encryption`: Takes a password in plaintext and encodes each character using 
-                          a masterkey that is unique to each user.
+              a masterkey that is unique to each user.
   - `XOR`: Once the Feistel rounds are complete, the encoded password is ran through
-           a XOR encryption for an addional layer of security.
+       a XOR encryption for an additional layer of security.
+- **Two-Factor Authentication (2FA)**: Enhance account security by enabling 2FA. Users can link their accounts with an authenticator app to generate time-based one-time passwords (TOTP).
 
 ## Installation
 
 1. **Clone the repository**:
-    ```sh
-    git clone https://github.com/yourusername/password_manager.git
-    cd password_manager
-    ```
+  ```sh
+  git clone https://github.com/yourusername/password_manager.git
+  cd password_manager
+  ```
 2. **Install dependencies**:
-    ```sh
-    pip install -r requirements.txt
-    ```
+  ```sh
+  pip install -r requirements.txt
+  ```
 3. **Run the application**:
-    ```sh
-    python main.py
-    ```
+  ```sh
+  python main.py
+  ```
 
 ## Usage
 
@@ -41,23 +42,25 @@ A secure and user-friendly password manager application to generate, store, and 
 - **Add New Password**: Click the "New Password" button to add a new password.
 - **Show Password**: Click on a site in the list to view the password in a new window.
 - **Toggle Password Visibility**: Use the "Show/Hide" button to toggle the visibility of the password.
+- **Enable 2FA**: Choose whether to enable two-factor authentication when registering a new user at login. Currently, this option is only available during user registration, but a settings menu to toggle this feature from the password dashboard is planned for future updates.
 
 ## File Structure
 
 - **src**
   - **UI/**
-     - `dashboard.py`: The main dashboard interface.
-     - `newPasswordSave.py`: Interface for adding new passwords.
-     - `showPassword.py`: Interface for displaying passwords.
-     - `login.py`: Interface for login screen, application launches at this window
-     - `styles.py`: Styling constants and functions for the UI.
+   - `dashboard.py`: The main dashboard interface.
+   - `newPasswordSave.py`: Interface for adding new passwords.
+   - `showPassword.py`: Interface for displaying passwords.
+   - `login.py`: Interface for login screen, application launches at this window.
+   - `settings.py`: Interface for enabling and managing 2FA.
+   - `styles.py`: Styling constants and functions for the UI.
   - **database/**
-     - `userPasswords.py`: Functions for opening and saving passwords for currently logged user.
-     - `passwordStorage.py`: Functions for checking login details.
+   - `userPasswords.py`: Functions for opening and saving passwords for currently logged user.
+   - `passwordStorage.py`: Functions for checking login details.
   - **security/**
-     - `generatePassword.py`: Password generation logic.
-     - `encrypt.py`: Functions for encoding and decoding passwords.
-  
+   - `generatePassword.py`: Password generation logic.
+   - `encrypt.py`: Functions for encoding and decoding passwords.
+   - `twoFactorAuth.py`: Logic for generating and validating TOTP for 2FA.
 
 - **Security**
   - Passwords are stored in JSON files with encryption.

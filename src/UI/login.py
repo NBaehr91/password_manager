@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox
 from database.passwordStorage import check_master_password, check_user_exists, register_master_password, update_user_wth_2FA, update_user_wthout_2FA
-from UI.styles import BACKGROUND_COLOR, TEXT_COLOR, PRIMEARY_COLOR, SECONDARY_COLOR, get_fonts, on_hover, on_leave
+from UI.styles import BACKGROUND_COLOR, TEXT_COLOR, PRIMEARY_COLOR, SECONDARY_COLOR, get_fonts, on_hover, on_leave, toggle_password
 from security.encrypt import get_master_key, generate_2FA_secret, verify_totp_code
 from UI.registerUser import RegisterNewUserPage
 
@@ -34,9 +34,24 @@ class LoginPage(tk.Frame):
             self, 
             text="Master Password:", 
             font=fonts["text"], 
-            bg=BACKGROUND_COLOR).pack(pady=(10,0))
-        self.password_entry = tk.Entry(self, show="*", font=fonts["text"])
-        self.password_entry.pack()
+            bg=BACKGROUND_COLOR
+            ).pack(pady=(10,0))
+        self.password_frame = tk.Frame(self, bg=BACKGROUND_COLOR)
+        self.password_frame.pack(fill='x', pady=(0,10))
+        self.password_entry = tk.Entry(
+            self.password_frame, 
+            show="*", 
+            font=fonts["text"]
+            )
+        self.password_entry.pack(side="left", fill="x", expand=True)
+        self.show_password_button = tk.Button(
+            self.password_frame,
+            text="Show",
+            font=fonts["text"],
+            bg=BACKGROUND_COLOR,
+            command=self.toggle_password_visibility
+            )
+        self.show_password_button.pack(side="right", padx=(5,0))
 
         self.login_button = tk.Button(
             self, 
@@ -180,3 +195,11 @@ class LoginPage(tk.Frame):
         popup.grab_set()
         self.wait_window(popup)
         return totp_code
+    
+    def toggle_password_visibility(self):
+        """Toggles the visibility of the password in the password entry field."""
+        self.password_visible = toggle_password(
+            self.password_entry, 
+            self.show_password_button, 
+            self.password_visible
+            )

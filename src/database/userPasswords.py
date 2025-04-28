@@ -55,7 +55,11 @@ def save_password(user, site, email, password):
     if site not in user_passwords:
         # If the site is not in the dictionary, add it
         user_passwords[site] = []
-        user_passwords[site].append({"email": email, "password": password, "date": date_saved})
+        user_passwords[site].append(
+            {"email": email, 
+             "password": password, 
+             "date": date_saved}
+             )
     else:
         # Check if the email already exists in the list for the site
         for entry in user_passwords[site]:
@@ -65,7 +69,11 @@ def save_password(user, site, email, password):
                 break
         else:
             # If the email is not found, add a new entry
-            user_passwords[site].append({"email": email, "password": password, "date": date_saved})
+            user_passwords[site].append(
+                {"email": email, 
+                 "password": password, 
+                 "date": date_saved}
+                 )
 
     # Check if the content has changed before writing to the file
     try:

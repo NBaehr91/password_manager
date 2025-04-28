@@ -66,7 +66,7 @@ class PasswordPage(tk.Toplevel):
             text="Show", 
             font=fonts["text"], 
             bg=SECONDARY_COLOR, 
-            command=self.toggle_password_visablity
+            command=self.toggle_password_visibility
             )
         self.show_button.pack(side="right")
 
@@ -127,7 +127,9 @@ class PasswordPage(tk.Toplevel):
         else:
             messagebox.showerror("Error", "Please fill in all fields.")
 
-    def toggle_password_visablity(self):
+    def toggle_password_visibility(self):
+        # Using the toggle_password function to handle visibility logic
+        # for consistency and reusability across the application.
         self.password_visible = toggle_password(
             self.password_entry, 
             self.show_button, 

@@ -3,6 +3,8 @@ from tkinter import messagebox
 from security.encrypt import generate_2FA_secret
 from database.passwordStorage import register_master_password, check_user_exists
 from UI.styles import BACKGROUND_COLOR, TEXT_COLOR, PRIMEARY_COLOR, SECONDARY_COLOR, get_fonts, on_hover, on_leave, toggle_password
+import qrcode
+from PIL import ImageTk
 
 class RegisterNewUserPage(tk.Toplevel):
     def __init__(self, root):
@@ -75,11 +77,48 @@ class RegisterNewUserPage(tk.Toplevel):
             # Here you would generate a TOTP secret code
             totp_secret = generate_2FA_secret()
             register_master_password(username, password, totp_secret, enable_2FA=True)
-            messagebox.showinfo(
-                "2-Factor Authentication",
-                f"2FA has been enabled for {username}.\nYour authentication key is: {totp_secret}\nPlease store this in a secure place."
-            )
+            self.show_qr_code(totp_secret)  # Show the QR code for the user to scan
         else:
             register_master_password(username, password, enable_2FA=False)
         self.new_username = username  # Call the success callback with the username
+        self.new_key = password  # Call the success callback with the key
         self.destroy()  # Close the registration window
+
+    def show_qr_code(self, secret):
+        """Displays a QR code for the 2FA secret."""
+        qr = qrcode.QRCode(
+            version=1,
+            box_size=10,
+            border=4,
+        )
+        qr.add_data(secret)
+        qr.make(fit=True)
+        img = qr.make_image(fill_color="black", back_color="white")
+
+        img = img.resize((200,200))
+        qr_img = ImageTk.PhotoImage(img)
+
+        popup_qr = tk.Toplevel(self)
+        popup_qr.title("Scan QR Code")
+        popup_qr.geometry("300x300")
+        popup_qr.configure(bg=BACKGROUND_COLOR)
+
+        tk.Label(
+            popup_qr, 
+            text="Scan this QR code with your 2FA app:", 
+            bg=BACKGROUND_COLOR, 
+            font=get_fonts(self)["text"]
+            ).pack(pady=(10, 0))
+
+        tk.Label(popup_qr, image=qr_img, bg=BACKGROUND_COLOR).pack(pady=(10, 0))
+
+        popup_qr.qr_img = qr_img  # Keep a reference to avoid garbage collection
+        tk.Button(
+            popup_qr, 
+            text="Close", 
+            command=popup_qr.destroy, 
+            bg=SECONDARY_COLOR, 
+            font=get_fonts(self)["button"]
+            ).pack(pady=(10, 0))
+        
+        self.wait_window(popup_qr)  # Wait for the QR code window to close before continuing

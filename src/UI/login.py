@@ -113,8 +113,9 @@ class LoginPage(tk.Frame):
 
         if hasattr(new_user_window, 'new_username') and new_user_window.new_username:
             username = new_user_window.new_username
+            key = new_user_window.new_key
             messagebox.showinfo("Success", "New User Created!")
-            self.on_success(username)  # Switch to the dashboard
+            self.on_success(username, key)  # Switch to the dashboard
 
     def ask_enable_2FA_popup(self):
         """Asks the user if they want to enable 2FA."""

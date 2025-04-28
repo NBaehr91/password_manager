@@ -35,7 +35,10 @@ def check_master_password(username, password):
             return False
 
         if user_data.get("2FA_enabled"):
-            return {"status": "2FA_needed", "totp_secret": user_data.get("totp_secret")}
+            return {
+                "status": "2FA_needed", 
+                "totp_secret": user_data.get("totp_secret")
+                }
         return {"status": "success"}
     return False  # Invalid user data format
 

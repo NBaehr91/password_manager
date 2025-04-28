@@ -35,8 +35,22 @@ class RegisterNewUserPage(tk.Toplevel):
             font=fonts["text"], 
             bg=BACKGROUND_COLOR
             ).pack(pady=(10,0))
-        self.password_entry = tk.Entry(self, show="*", font=fonts["text"])
-        self.password_entry.pack()
+        self.password_frame = tk.Frame(self, bg=BACKGROUND_COLOR)
+        self.password_frame.pack(fill='x', pady=(0,10))
+        self.password_entry = tk.Entry(
+            self.password_frame, 
+            show="*", 
+            font=fonts["text"]
+            )
+        self.password_entry.pack(side="left", fill="x", expand=True)
+        self.show_password_button = tk.Button(
+            self.password_frame,
+            text="Show",
+            font=fonts["text"],
+            bg=BACKGROUND_COLOR,
+            command=self.toggle_password_visibility
+            )
+        self.show_password_button.pack(side="right", padx=(5,0))
 
         self.enable_2FA_var = tk.BooleanVar(value=False)
         enable_2FA = tk.Checkbutton(
@@ -122,3 +136,11 @@ class RegisterNewUserPage(tk.Toplevel):
             ).pack(pady=(10, 0))
         
         self.wait_window(popup_qr)  # Wait for the QR code window to close before continuing
+    
+    def toggle_password_visibility(self):
+        """Toggles the visibility of the password entry field."""
+        self.password_visible = toggle_password(
+            self.password_entry, 
+            self.show_password_button, 
+            self.password_visible
+        )

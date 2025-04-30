@@ -2,12 +2,13 @@ import tkinter as tk
 from UI.login import LoginPage
 from UI.dashboard import Dashboard
 from UI.styles import BACKGROUND_COLOR
+from UI.menu import create_menubar
 
-class AppWindow:
+class AppWindow(tk.Tk):
     def __init__(self):
-        self.root = tk.Tk()
-        self.root.title("Password Manager")
-        self.root.configure(bg=BACKGROUND_COLOR)
+        super().__init__()
+        self.title("Password Manager")
+        self.configure(bg=BACKGROUND_COLOR)
         
         # Start with login page
         self.show_login()
@@ -15,9 +16,7 @@ class AppWindow:
     def show_login(self):
         """Display login screen."""
         self.clear_window()
-        self.login_page = LoginPage(self.root, self.on_successful_login)
-        self.root.geometry("300x400")
-        self.login_page.pack(fill='both', expand=True)
+        LoginPage(self, self.on_successful_login).pack(fill='both', expand=True)
 
     def on_successful_login(self, username, key):
         """Callback function to switch to the dashboard after successful login."""
@@ -28,16 +27,16 @@ class AppWindow:
     def show_dashboard(self):
         """Display the main dashboard after login."""
         self.clear_window()
-        self.dashboard = Dashboard(self.root, self.user, self.current_user_key)
-        self.dashboard.pack(fill='both', expand=True)
+        Dashboard(self).pack(fill='both', expand=True)
+
+        create_menubar(self)
 
     def clear_window(self):
         """Clears the current window to load a new page."""
-        for widget in self.root.winfo_children():
+        for widget in self.winfo_children():
             widget.destroy()
-            widget.pack_forget()
 
     def run(self):
         """Runs the Tkinter main event loop."""
         # Runs the Tkinter main event loop, waiting for events and updating the UI
-        self.root.mainloop()
+        self.mainloop()

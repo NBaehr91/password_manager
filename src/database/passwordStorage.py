@@ -100,15 +100,17 @@ def update_user_wth_2FA(username, secret_2FA_code):
     user_data = users[username]
     if isinstance(user_data, str):
         # If the user only has a password, convert it to a dict with 2FA secret
-        user_data = {"password": user_data,
-                     "totp_secret": secret_2FA_code,
-                     "2FA_enabled": True}
+        users[username] = {
+            "password": user_data,
+            "totp_secret": secret_2FA_code,
+            "2FA_enabled": True                
+            }
     else:
         users[username] = {
             "password": user_data["password"],
             "totp_secret": secret_2FA_code,
             "2FA_enabled": True
-        }
+            }
 
     with open(USER_DB, "w") as f:
         json.dump(users, f, indent=4)
@@ -127,12 +129,37 @@ def update_user_wthout_2FA(username):
     user_data = users[username]
     if isinstance(user_data, str):
         # If the user only has a password, convert it to a dict without 2FA
-        user_data = {"password": user_data,
+        users[username] = {"password": user_data,
                      "2FA_enabled": False}
     else:
         users[username] = {
             "password": user_data["password"],
             "2FA_enabled": False
+        }
+
+    with open(USER_DB, "w") as f:
+        json.dump(users, f, indent=4)
+
+def change_master_password(username, new_password):
+    """Changes the master password for a user."""
+    users = {}
+
+    if os.path.exists(USER_DB):
+        try:
+            with open(USER_DB, "r") as f:
+                users = json.load(f)
+        except json.JSONDecodeError:
+            pass
+
+    user_data = users[username]
+    if isinstance(user_data, str):
+        # If the user only has a password, convert it to a dict with the new password
+        user_data = {"password": hash_master_password(new_password),
+                     "2FA_enabled": False}
+    else:
+        users[username] = {
+            "password": hash_master_password(new_password),
+            "2FA_enabled": user_data["2FA_enabled"]
         }
 
     with open(USER_DB, "w") as f:

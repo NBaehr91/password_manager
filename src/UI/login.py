@@ -8,13 +8,13 @@ from UI.registerUser import RegisterNewUserPage
 
 class LoginPage(tk.Frame):
     """Handles user login and registration."""
-    def __init__(self, root, on_success):
-        super().__init__(root)
-        self.root = root
+    def __init__(self, master, on_success):
+        super().__init__(master)
+        self.master = master
         self.on_success = on_success
-        #self.root.title("Login")
-        fonts = get_fonts(root)
-
+        self.master.geometry("300x400")
+        fonts = get_fonts(self.master)
+        self.password_visible = False
         tk.Label(
             self, text="Login", 
             font=fonts["title"], 
@@ -27,8 +27,10 @@ class LoginPage(tk.Frame):
             font=fonts["text"], 
             bg=BACKGROUND_COLOR
             ).pack(pady=(10,0))
-        self.username_entry = tk.Entry(self, font=fonts["text"])
-        self.username_entry.pack()
+        self.username_frame = tk.Frame(self, bg=BACKGROUND_COLOR)
+        self.username_frame.pack(pady=(0,10),padx=20,fill='x')
+        self.username_entry = tk.Entry(self.username_frame, font=fonts["text"])
+        self.username_entry.pack(side="left", fill="x", expand=True)
 
         tk.Label(
             self, 
@@ -37,7 +39,7 @@ class LoginPage(tk.Frame):
             bg=BACKGROUND_COLOR
             ).pack(pady=(10,0))
         self.password_frame = tk.Frame(self, bg=BACKGROUND_COLOR)
-        self.password_frame.pack(fill='x', pady=(0,10))
+        self.password_frame.pack(pady=(0,10), padx=20, fill='x')
         self.password_entry = tk.Entry(
             self.password_frame, 
             show="*", 
@@ -115,7 +117,6 @@ class LoginPage(tk.Frame):
                 self.on_success(username, masterkey)  # Switch to the dashboard
 
         if check_master_password(username, password):
-            messagebox.showinfo("Success", "Login successful!")
             self.on_success(username, masterkey)  # Switch to the dashboard
         else:
             messagebox.showerror("Error", "Invalid username or password.")
@@ -123,7 +124,7 @@ class LoginPage(tk.Frame):
     def register(self):
         """Checks if user exists and registers if not."""
        
-        new_user_window = RegisterNewUserPage(self.root)
+        new_user_window = RegisterNewUserPage(self.master)
         self.wait_window(new_user_window)  # Wait for the registration window to close
 
         if hasattr(new_user_window, 'new_username') and new_user_window.new_username:
@@ -152,7 +153,7 @@ class LoginPage(tk.Frame):
         text = tk.Label(
             popup, 
             text="Do you want to enable 2FA additional security?", 
-            font=get_fonts(self.root)["text"],
+            font=get_fonts(self.master)["text"],
             wraplength=250,
             )
         text.pack(pady=10, fill='x', expand=True)
@@ -187,9 +188,9 @@ class LoginPage(tk.Frame):
         tk.Label(
             popup, 
             text="Enter your TOTP code:", 
-            font=get_fonts(self.root)["text"]
+            font=get_fonts(self.master)["text"]
             ).pack(pady=10)
-        totp_entry = tk.Entry(popup, font=get_fonts(self.root)["text"])
+        totp_entry = tk.Entry(popup, font=get_fonts(self.master)["text"])
         totp_entry.pack(pady=5)
         tk.Button(popup, text="Submit", command=on_submit).pack(pady=10)
         popup.grab_set()

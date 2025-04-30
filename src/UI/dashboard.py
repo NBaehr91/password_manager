@@ -5,22 +5,23 @@ from database.userPasswords import open_passwords, save_password
 from UI.newPasswordSave import NewPasswordPage
 from UI.showPassword import PasswordPage
 from UI.styles import BACKGROUND_COLOR, TEXT_COLOR, PRIMEARY_COLOR, SECONDARY_COLOR, get_fonts, on_hover, on_leave
+from UI.menu import create_menubar
 
 class Dashboard(tk.Frame):
-    def __init__(self, root, username, password):
-    
-        super().__init__(root)
-        self.root = root
-        self.username = username
-        self.key = password
+    def __init__(self, master):
+        super().__init__(master)
+        self.master = master
+        self.username = self.master.user
+        self.key = self.master.current_user_key
         self.configure(bg=BACKGROUND_COLOR)
-        self.root.geometry("800x500")
+        self.master.geometry("800x500")
         #self.root.title("Dashboard")
-        fonts = get_fonts(root)
+        fonts = get_fonts(self.master)
+
         # Label and button
         self.password_label = tk.Label(
             self, 
-            text=f"{username}'s Passwords", 
+            text=f"{self.username}'s Passwords", 
             font=fonts["title"], 
             bg=BACKGROUND_COLOR
             )
@@ -39,7 +40,7 @@ class Dashboard(tk.Frame):
         self.new_pw_button.pack()
 
         # display sites saved in scrollable list
-        self.password_dict = open_passwords(username)
+        self.password_dict = open_passwords(self.username)
         self.password_list = list(self.password_dict.keys())
         self.password_list_frame = tk.Frame(self, bg=BACKGROUND_COLOR)
         self.password_list_frame.pack(pady=(10,0), fill='x')
@@ -68,7 +69,7 @@ class Dashboard(tk.Frame):
 
     # Popup window for new passwords
     def save_new_passwords(self):
-        new_password_window = NewPasswordPage(self.root, self.username, self.key)
+        new_password_window = NewPasswordPage(self.master, self.username, self.key)
         new_password_window.grab_set()
         new_password_window.focus_set()
         # Wait for the new password window to close
@@ -104,7 +105,7 @@ class Dashboard(tk.Frame):
         selected_site = self.password_listbox.item(selected_item, "values")[0]
         if selected_site:
             new_password_window = PasswordPage(
-                self.root, 
+                self.master, 
                 self.username, 
                 selected_site, 
                 self.key
